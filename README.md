@@ -1,4 +1,4 @@
-# Leather Armor Color Calculator
+# Armor Color Calculator
 
 A tool for automatically calculating and rendering dye mixing results for leather armor, leather horse armor, and wolf armor in *Minecraft*.
 
