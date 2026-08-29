@@ -53,3 +53,4 @@ python ArmorCalculator.py
 
 - Mojang Studios 创作了《Minecraft》这款游戏
 - 所有提供反馈和建议的玩家和Wiki成员
+- [Suijiying](https://github.com/Suijiying)，提供了原始渲染图
