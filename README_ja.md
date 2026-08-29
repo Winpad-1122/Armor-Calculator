@@ -53,3 +53,4 @@ python ArmorCalculator.py
 
 - Mojang Studios が《Minecraft》というゲームを創造されたこと
 - フィードバックや提案を提供してくださったすべてのプレイヤーとWikiメンバーの皆様
+- [Suijiying](https://github.com/Suijiying)、元のレンダリング画像を提供してくれました
