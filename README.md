@@ -53,4 +53,4 @@ python ArmorCalculator.py
 
 - Mojang Studios for creating *Minecraft*
 - All players and Wiki members who provided feedback and suggestions
-- [Suijiying](https://github.com/Suijiying), who provided the original render images.
+- [Suijiying](https://github.com/Suijiying), who provided the original render images
