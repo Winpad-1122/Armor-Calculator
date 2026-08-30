@@ -1676,7 +1676,7 @@ class ImageBlendApp:
         length_inner = ttk.Frame(length_frame)
         length_inner.pack(pady=10, padx=10)
 
-        ttk.Label(length_inner, text=self.lang["sequence_length"] + ":").pack(side=tk.LEFT, padx=5)
+        ttk.Label(length_inner, text=self.lang["sequence_length"]).pack(side=tk.LEFT, padx=5)
         seq_len_var = tk.StringVar(value="3")
         seq_len_entry = ttk.Entry(length_inner, textvariable=seq_len_var, width=5)
         seq_len_entry.pack(side=tk.LEFT, padx=5)
@@ -1687,7 +1687,7 @@ class ImageBlendApp:
         batch_count_inner = ttk.Frame(batch_count_frame)
         batch_count_inner.pack(pady=10, padx=10)
 
-        ttk.Label(batch_count_inner, text=self.lang["batch_count"] + ":").pack(side=tk.LEFT, padx=5)
+        ttk.Label(batch_count_inner, text=self.lang["batch_count"]).pack(side=tk.LEFT, padx=5)
         batch_count_var = tk.StringVar(value="2")
         batch_count_entry = ttk.Entry(batch_count_inner, textvariable=batch_count_var, width=5)
         batch_count_entry.pack(side=tk.LEFT, padx=5)
@@ -2740,7 +2740,7 @@ class ImageBlendApp:
 
                             final_img = self.render_single_image()
 
-                            filename = self.generate_je_filename([], armor_type, body_type, damage_level) + ".png"
+                            filename = self.generate_je_filename(seq, armor_type, body_type, damage_level) + ".png"
                             file_path = os.path.join(batch_output_dir, filename)
                             final_img.save(file_path, 'PNG')
 
@@ -2956,7 +2956,7 @@ class ImageBlendApp:
 
                         final_img = self.render_single_image()
 
-                        filename = self.generate_je_filename([], armor_type, body_type, damage_level) + ".png"
+                        filename = self.generate_je_filename(seq, armor_type, body_type, damage_level) + ".png"
                         file_path = os.path.join(batch_output_dir, filename)
                         final_img.save(file_path, 'PNG')
 
@@ -3875,7 +3875,7 @@ class ImageBlendApp:
 
                             final_img = self.render_single_image()
 
-                            filename = self.generate_je_filename([], armor_type, body_type, "intact") + ".png"
+                            filename = self.generate_je_filename(seq, armor_type, body_type, "intact") + ".png"
                             file_path = os.path.join(batch_output_dir, filename)
                             final_img.save(file_path, 'PNG')
 
@@ -4087,7 +4087,7 @@ class ImageBlendApp:
 
                         final_img = self.render_single_image()
 
-                        filename = self.generate_je_filename([], armor_type, body_type, "intact") + ".png"
+                        filename = self.generate_je_filename(seq, armor_type, body_type, "intact") + ".png"
                         file_path = os.path.join(batch_output_dir, filename)
                         final_img.save(file_path, 'PNG')
 
@@ -4860,8 +4860,32 @@ class ImageBlendApp:
         self.update_times_display()
 
     def create_widgets(self):
-        main_frame = ttk.Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+        main_container = ttk.Frame(self.root)
+        main_container.pack(fill=tk.BOTH, expand=True, padx=15, pady=15)
+
+        main_canvas = tk.Canvas(main_container, highlightthickness=0)
+        main_canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        main_scrollbar = ttk.Scrollbar(main_container, orient=tk.VERTICAL, command=main_canvas.yview)
+        main_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        main_canvas.configure(yscrollcommand=main_scrollbar.set)
+
+        main_frame = ttk.Frame(main_canvas)
+        canvas_window = main_canvas.create_window((0, 0), window=main_frame, anchor=tk.NW)
+
+        def on_frame_configure(event):
+            main_canvas.configure(scrollregion=main_canvas.bbox("all"))
+
+        def on_canvas_configure(event):
+            main_canvas.itemconfig(canvas_window, width=event.width)
+
+        main_frame.bind("<Configure>", on_frame_configure)
+        main_canvas.bind("<Configure>", on_canvas_configure)
+
+        def on_mousewheel(event):
+            main_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+        main_canvas.bind_all("<MouseWheel>", on_mousewheel)
 
         left_frame = ttk.Frame(main_frame)
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
@@ -4869,7 +4893,7 @@ class ImageBlendApp:
         self.result_canvas = tk.Canvas(left_frame, bg='#f0f0f0', width=450, height=450)
         self.result_canvas.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-        right_frame = ttk.Frame(main_frame, width=900)
+        right_frame = ttk.Frame(main_frame)
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
 
         self.lang_notebook = ttk.Notebook(right_frame)
@@ -5311,7 +5335,7 @@ class ImageBlendApp:
                                        bg=bg_color, font=("Arial", 9, "bold"))
             else:
                 batch_label = tk.Label(self.list_inner,
-                                       text=f"{self.lang['batch_prefix']}{batch_idx + 1}（{len(batch)}{"/9"}）",
+                                       text=f"{self.lang['batch_prefix']}{batch_idx + 1}（{len(batch)}/9）",
                                        bg=bg_color, font=("Arial", 9, "bold"), cursor="hand2")
                 batch_label.bind('<Button-1>', lambda e, bi=batch_idx: self.set_current_batch(bi))
             batch_label.pack(fill=tk.X, pady=(5, 2))
